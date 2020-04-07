@@ -7,9 +7,9 @@
 // As a simple example:
 //
 // 	type Options struct {
-// 		Query   string `url:"q"`
-// 		ShowAll bool   `url:"all"`
-// 		Page    int    `url:"page"`
+// 		Query   string `json:"q"`
+// 		ShowAll bool   `json:"all"`
+// 		Page    int    `json:"page"`
 // 	}
 //
 // 	opt := Options{ "foo", true, 2 }
@@ -55,23 +55,23 @@ type Encoder interface {
 // for IsZero().
 //
 // The URL parameter name defaults to the struct field name but can be
-// specified in the struct field's tag value.  The "url" key in the struct
+// specified in the struct field's tag value.  The "json" key in the struct
 // field's tag value is the key name, followed by an optional comma and
 // options.  For example:
 //
 // 	// Field is ignored by this package.
-// 	Field int `url:"-"`
+// 	Field int `json:"-"`
 //
 // 	// Field appears as URL parameter "myName".
-// 	Field int `url:"myName"`
+// 	Field int `json:"myName"`
 //
 // 	// Field appears as URL parameter "myName" and the field is omitted if
 // 	// its value is empty
-// 	Field int `url:"myName,omitempty"`
+// 	Field int `json:"myName,omitempty"`
 //
 // 	// Field appears as URL parameter "Field" (the default), but the field
 // 	// is skipped if empty.  Note the leading comma.
-// 	Field int `url:",omitempty"`
+// 	Field int `json:",omitempty"`
 //
 // For encoding individual field values, the following type-dependent rules
 // apply:
@@ -146,7 +146,7 @@ func reflectValue(values url.Values, val reflect.Value, scope string) error {
 		}
 
 		sv := val.Field(i)
-		tag := sf.Tag.Get("url")
+		tag := sf.Tag.Get("json")
 		if tag == "-" {
 			continue
 		}
@@ -298,11 +298,11 @@ func isEmptyValue(v reflect.Value) bool {
 	return false
 }
 
-// tagOptions is the string following a comma in a struct field's "url" tag, or
+// tagOptions is the string following a comma in a struct field's "json" tag, or
 // the empty string. It does not include the leading comma.
 type tagOptions []string
 
-// parseTag splits a struct field's url tag into its name and comma-separated
+// parseTag splits a struct field's json tag into its name and comma-separated
 // options.
 func parseTag(tag string) (string, tagOptions) {
 	s := strings.Split(tag, ",")
