@@ -147,7 +147,7 @@ func reflectValue(values url.Values, val reflect.Value, scope string) error {
 
 		sv := val.Field(i)
 		tag := sf.Tag.Get("url")
-		if tag == "" || tag == "-" {
+		if tag == "-" {
 			continue
 		}
 		name, opts := parseTag(tag)
@@ -155,10 +155,8 @@ func reflectValue(values url.Values, val reflect.Value, scope string) error {
 			if sf.Anonymous && sv.Kind() == reflect.Struct {
 				// save embedded struct for later processing
 				embedded = append(embedded, sv)
-				continue
 			}
-
-			name = sf.Name
+			continue
 		}
 
 		if scope != "" {
