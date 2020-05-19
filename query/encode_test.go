@@ -13,13 +13,13 @@ import (
 )
 
 type Nested struct {
-	A   SubNested  `json:"a"`
-	B   *SubNested `json:"b"`
-	Ptr *SubNested `json:"ptr,omitempty"`
+	A   SubNested  `url:"a"`
+	B   *SubNested `url:"b"`
+	Ptr *SubNested `url:"ptr,omitempty"`
 }
 
 type SubNested struct {
-	Value string `json:"value"`
+	Value string `url:"value"`
 }
 
 func TestValues_types(t *testing.T) {
@@ -71,16 +71,16 @@ func TestValues_types(t *testing.T) {
 			// slices and arrays
 			struct {
 				A []string
-				B []string `json:",comma"`
-				C []string `json:",space"`
+				B []string `url:",comma"`
+				C []string `url:",space"`
 				D [2]string
-				E [2]string `json:",comma"`
-				F [2]string `json:",space"`
-				G []*string `json:",space"`
-				H []bool    `json:",int,space"`
-				I []string  `json:",brackets"`
-				J []string  `json:",semicolon"`
-				K []string  `json:",numbered"`
+				E [2]string `url:",comma"`
+				F [2]string `url:",space"`
+				G []*string `url:",space"`
+				H []bool    `url:",int,space"`
+				I []string  `url:",brackets"`
+				J []string  `url:",semicolon"`
+				K []string  `url:",numbered"`
 			}{
 				A: []string{"a", "b"},
 				B: []string{"a", "b"},
@@ -113,9 +113,9 @@ func TestValues_types(t *testing.T) {
 			// other types
 			struct {
 				A time.Time
-				B time.Time `json:",unix"`
-				C bool      `json:",int"`
-				D bool      `json:",int"`
+				B time.Time `url:",unix"`
+				C bool      `url:",int"`
+				D bool      `url:",int"`
 			}{
 				A: time.Date(2000, 1, 1, 12, 34, 56, 0, time.UTC),
 				B: time.Date(2000, 1, 1, 12, 34, 56, 0, time.UTC),
@@ -131,7 +131,7 @@ func TestValues_types(t *testing.T) {
 		},
 		{
 			struct {
-				Nest Nested `json:"nest"`
+				Nest Nested `url:"nest"`
 			}{
 				Nested{
 					A: SubNested{
@@ -146,7 +146,7 @@ func TestValues_types(t *testing.T) {
 		},
 		{
 			struct {
-				Nest Nested `json:"nest"`
+				Nest Nested `url:"nest"`
 			}{
 				Nested{
 					Ptr: &SubNested{
@@ -183,10 +183,10 @@ func TestValues_omitEmpty(t *testing.T) {
 	s := struct {
 		a string
 		A string
-		B string  `json:",omitempty"`
-		C string  `json:"-"`
-		D string  `json:"omitempty"` // actually named omitempty, not an option
-		E *string `json:",omitempty"`
+		B string  `url:",omitempty"`
+		C string  `url:"-"`
+		D string  `url:"omitempty"` // actually named omitempty, not an option
+		E *string `url:",omitempty"`
 	}{E: &str}
 
 	v, err := Values(s)
@@ -275,7 +275,7 @@ func (m EncodedArgs) EncodeValues(key string, v *url.Values) error {
 
 func TestValues_Marshaler(t *testing.T) {
 	s := struct {
-		Args EncodedArgs `json:"arg"`
+		Args EncodedArgs `url:"arg"`
 	}{[]string{"a", "b", "c"}}
 	v, err := Values(s)
 	if err != nil {
@@ -294,7 +294,7 @@ func TestValues_Marshaler(t *testing.T) {
 
 func TestValues_MarshalerWithNilPointer(t *testing.T) {
 	s := struct {
-		Args *EncodedArgs `json:"arg"`
+		Args *EncodedArgs `url:"arg"`
 	}{}
 	v, err := Values(s)
 	if err != nil {
